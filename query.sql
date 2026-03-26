@@ -49,7 +49,7 @@ CREATE TABLE products (
     supplier                VARCHAR(50)
 );
 
-----CHECKING FOR DATA QUALITY ISSUES
+---- Checking for data quality issues
 SELECT *
 FROM orders
 WHERE 
@@ -68,7 +68,7 @@ SELECT *
 FROM orders
 WHERE discount_amount > gross_revenue;
 
------CHECK FOR NULL VALUES
+----- Check for null value
 SELECT order_id 
 from orders
 where order_id ISNULL;
@@ -81,7 +81,7 @@ SELECT month, platform
 from marketing_spend
 where (month ,platform) ISNULL;
 
---CHECK FOR DUPLICATE VALUES IN PRIMARY KEY
+-- Check for duplicate values in primary key
 
 SELECT order_id, count(*)
 FROM orders
@@ -93,7 +93,7 @@ FROM products
 group by product_id
 having count(*) > 1;
 
------Verify that order-level costs add up correctly (product cost + shipping + fees = total costs).
+----- Verify that order-level costs add up correctly (product cost + shipping + fees = total costs).
 select * from orders;
 
 SELECT 
@@ -110,8 +110,7 @@ WHERE
     <> ROUND(total_costs, 2);
 
 
--- 1.What is the average profit margin by product category? 
--- Which categories are the most and least profitable, and what is driving the difference (product cost, shipping, returns, or discounts)?
+-- Q1.What is the average profit margin by product category? Which categories are the most and least profitable, and what is driving the difference (product cost, shipping, returns, or discounts)?
 
 -- Profit margin by category (most → least profitable)
 SELECT
@@ -125,7 +124,7 @@ FROM orders
 GROUP BY primary_category
 ORDER BY total_profit DESC;
 
---Cost drivers by category
+-- Cost drivers by category
 SELECT
     primary_category,
     ROUND(SUM(profit) * 100.0 / NULLIF(SUM(net_revenue), 0), 2) AS profit_margin_pct,
@@ -139,8 +138,7 @@ GROUP BY primary_category
 ORDER BY profit_margin_pct DESC;
 
 
--- 2.How does profitability differ across sales channels (Website, Mobile App, Marketplace, Social Commerce)?
--- Which channel has the best and worst profit per order after accounting for platform fees?
+-- Q2.How does profitability differ across sales channels (Website, Mobile App, Marketplace, Social Commerce)? Which channel has the best and worst profit per order after accounting for platform fees?
 SELECT
     channel,
     COUNT(order_id) AS total_orders,
@@ -161,9 +159,8 @@ FROM orders
 GROUP BY channel
 ORDER BY avg_profit_after_fee DESC;
 
--- 3.What is the return rate by category and channel? Estimate how much total revenue was lost to returns 
--- over the analysis period.
---Return rate by category
+-- Q3.What is the return rate by category and channel? Estimate how much total revenue was lost to returns over the analysis period.
+-- Return rate by category
 SELECT 
 	primary_category,
 	ROUND(
@@ -172,7 +169,7 @@ SELECT
 FROM orders
 GROUP BY primary_category
 
---Return rate by channel
+-- Return rate by channel
 SELECT 
 	channel,
 	ROUND(
@@ -181,13 +178,12 @@ SELECT
 FROM orders
 GROUP BY channel
 
---Total revenue was lost to returns over the analysis period.
+-- Total revenue was lost to returns over the analysis period.
 SELECT 
 	ROUND(SUM(CASE WHEN returned = 'Yes' THEN refund_amount ELSE 0 END), 2) AS total_revenue_lost
 FROM orders
 
--- 4.Analyze the marketing spend data: Which advertising platform delivers the best ROAS (Return on Ad Spend)? 
--- Are there any platforms where the company is spending money but not getting a positive return?
+-- Q4.Analyze the marketing spend data: Which advertising platform delivers the best ROAS (Return on Ad Spend)? Are there any platforms where the company is spending money but not getting a positive return?
 
 SELECT 
 	platform,
@@ -202,8 +198,7 @@ FROM marketing_spend
 GROUP BY platform
 ORDER BY avg_roas ASC
 
--- 5.If the CEO asked you to cut 20% of the marketing budget, which platforms and months would you recommend
--- reducing spend on? Support your recommendation with data.
+-- Q5.If the CEO asked you to cut 20% of the marketing budget, which platforms and months would you recommend reducing spend on? Support your recommendation with data.
 
 WITH platform_stats AS (
     SELECT
