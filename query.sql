@@ -11,7 +11,6 @@ CREATE TABLE marketing_spend (
 	cpa	FLOAT,
 	roas FLOAT
 );
-SELECT * FROM marketing_spend
 
 DROP TABLE IF EXISTS orders;
 CREATE TABLE orders (
@@ -51,7 +50,6 @@ CREATE TABLE products (
 );
 
 ----CHECKING FOR DATA QUALITY ISSUES
-
 SELECT *
 FROM orders
 WHERE 
@@ -112,14 +110,8 @@ WHERE
     <> ROUND(total_costs, 2);
 
 
-
-
-
-
-
-1.What is the average profit margin by product category? 
-Which categories are the most and least profitable, and what is driving the difference 
-(product cost, shipping, returns, or discounts)?
+-- 1.What is the average profit margin by product category? 
+-- Which categories are the most and least profitable, and what is driving the difference (product cost, shipping, returns, or discounts)?
 
 -- Profit margin by category (most → least profitable)
 SELECT
@@ -147,8 +139,8 @@ GROUP BY primary_category
 ORDER BY profit_margin_pct DESC;
 
 
-2.How does profitability differ across sales channels (Website, Mobile App, Marketplace, Social Commerce)?
-Which channel has the best and worst profit per order after accounting for platform fees?
+-- 2.How does profitability differ across sales channels (Website, Mobile App, Marketplace, Social Commerce)?
+-- Which channel has the best and worst profit per order after accounting for platform fees?
 SELECT
     channel,
     COUNT(order_id) AS total_orders,
@@ -169,8 +161,8 @@ FROM orders
 GROUP BY channel
 ORDER BY avg_profit_after_fee DESC;
 
-3.What is the return rate by category and channel? Estimate how much total revenue was lost to returns 
-over the analysis period.
+-- 3.What is the return rate by category and channel? Estimate how much total revenue was lost to returns 
+-- over the analysis period.
 --Return rate by category
 SELECT 
 	primary_category,
@@ -194,8 +186,8 @@ SELECT
 	ROUND(SUM(CASE WHEN returned = 'Yes' THEN refund_amount ELSE 0 END), 2) AS total_revenue_lost
 FROM orders
 
-4.Analyze the marketing spend data: Which advertising platform delivers the best ROAS (Return on Ad Spend)? 
-Are there any platforms where the company is spending money but not getting a positive return?
+-- 4.Analyze the marketing spend data: Which advertising platform delivers the best ROAS (Return on Ad Spend)? 
+-- Are there any platforms where the company is spending money but not getting a positive return?
 
 SELECT 
 	platform,
@@ -210,8 +202,8 @@ FROM marketing_spend
 GROUP BY platform
 ORDER BY avg_roas ASC
 
-5.If the CEO asked you to cut 20% of the marketing budget, which platforms and months would you recommend
-reducing spend on? Support your recommendation with data.
+-- 5.If the CEO asked you to cut 20% of the marketing budget, which platforms and months would you recommend
+-- reducing spend on? Support your recommendation with data.
 
 WITH platform_stats AS (
     SELECT
